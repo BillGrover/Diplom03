@@ -10,3 +10,4 @@
 /src/test/
 /.idea/
 /DiplomProject.iml
+/DiplomProject/src/main/resources/dropDB.sql
