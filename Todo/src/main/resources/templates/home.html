@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My WEB</title>
+</head>
+
+<body>
+<h1>My WEB</h1>
+
+<!--кнопка перехода к тудушке-->
+<form method="GET" th:action="@{/todolist}">
+    <input type="submit" value="TODO List"/>
+</form><br/>
+
+<!--кнопка выхода из аккаунта-->
+<form method="POST" th:action="@{/logout}">
+    <input type="submit" value="Logout"/>
+</form><br/>
+
+</body>
+</html>
