@@ -26,5 +26,47 @@ public class PostVotes {    //Лайки и дизлайки
     private Date time;
 
     @NotNull
-    private byte value;
+    private byte value; // "1" - лайк, "-1" - дизлайк
+
+    /****** ГЕТТЕРЫ ******/
+    public int getId() {
+        return id;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public Posts getPost() {
+        return post;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public byte getValue() {
+        return value;
+    }
+
+    /****** СЕТТЕРЫ ******/
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+    }
+
+    public void setPost(Posts post) {
+        this.post = post;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
+    public void setValue(byte value) {
+        this.value = value;
+    }
 }

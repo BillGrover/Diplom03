@@ -29,4 +29,38 @@ public class GlobalSettings {
     POST_PREMODERATION      Премодерация постов                 YES / NO
     STATISTICS_IS_PUBLIC    Показывать всем статистику блога    YES / NO
      */
+
+    /****** ГЕТТЕРЫ ******/
+    public int getId() {
+        return id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    /****** СЕТТЕРЫ ******/
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

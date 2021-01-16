@@ -22,4 +22,38 @@ public class CaptchaCodes {
     @NotNull
     @Column(columnDefinition = "TINYTEXT")
     private String secretCode;
+
+    /****** ГЕТТЕРЫ ******/
+    public int getId() {
+        return id;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getSecretCode() {
+        return secretCode;
+    }
+
+    /****** СЕТТЕРЫ ******/
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setSecretCode(String secretCode) {
+        this.secretCode = secretCode;
+    }
 }
