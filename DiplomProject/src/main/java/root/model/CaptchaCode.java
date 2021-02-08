@@ -5,7 +5,8 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-public class CaptchaCodes {
+@Table(name = "captcha_codes")
+public class CaptchaCode {
 
     /****** ПОЛЯ ******/
     @Id

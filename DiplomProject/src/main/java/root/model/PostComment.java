@@ -5,7 +5,8 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-public class PostComments {
+@Table(name = "post_comments")
+public class PostComment {
 
     /****** ПОЛЯ ******/
     @Id
@@ -16,14 +17,14 @@ public class PostComments {
     private Integer parentId;
 
     @NotNull
-    @ManyToOne(targetEntity = Posts.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = Post.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id", nullable = false)
-    private Posts post;
+    private Post post;
 
     @NotNull
-    @ManyToOne(targetEntity = Users.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    private User user;
 
     @NotNull
     private Date time;
@@ -41,11 +42,11 @@ public class PostComments {
         return parentId;
     }
 
-    public Posts getPost() {
+    public Post getPost() {
         return post;
     }
 
-    public Users getUser() {
+    public User getUser() {
         return user;
     }
 
@@ -66,11 +67,11 @@ public class PostComments {
         this.parentId = parentId;
     }
 
-    public void setPost(Posts post) {
+    public void setPost(Post post) {
         this.post = post;
     }
 
-    public void setUser(Users user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

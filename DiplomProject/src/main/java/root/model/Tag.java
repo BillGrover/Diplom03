@@ -1,11 +1,14 @@
 package root.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
-public class Tags {
+@Table(name = "tags")
+public class Tag {
 
     /****** ПОЛЯ ******/
     @Id
@@ -15,6 +18,7 @@ public class Tags {
     @NotNull
     private String title;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "tag")
     Set<Tag2Post> tag2Post;
 

@@ -1,12 +1,17 @@
 package root.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
-public class Users {
+@Table(name = "users")
+public class User {
 
     /****** ПОЛЯ ******/
     @Id
@@ -33,17 +38,30 @@ public class Users {
     @Column(columnDefinition = "TEXT")
     private String photo;
 
-    @OneToMany(targetEntity = Posts.class, mappedBy = "user")
-    private List<Posts> posts;
+    @JsonIgnore
+    @OneToMany(targetEntity = Post.class, mappedBy = "user")
+    private List<Post> posts;
 
-    @OneToMany(targetEntity = Posts.class, mappedBy = "moderator")
-    private List<Posts> moderatedPosts;
+    @JsonIgnore
+    @OneToMany(targetEntity = Post.class, mappedBy = "moderator")
+    private List<Post> moderatedPosts;
 
-    @OneToMany(targetEntity = PostVotes.class, mappedBy = "user")
-    private List<PostVotes> votes;
+    @JsonIgnore
+    @OneToMany(targetEntity = PostVote.class, mappedBy = "user")
+    private List<PostVote> votes;
 
-    @OneToMany(targetEntity = PostComments.class, mappedBy = "user")
-    private List<PostComments> comments;
+    @JsonIgnore
+    @OneToMany(targetEntity = PostComment.class, mappedBy = "user")
+    private List<PostComment> comments;
+
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
     /****** ГЕТТЕРЫ ******/
     public int getId() {
@@ -78,19 +96,19 @@ public class Users {
         return photo;
     }
 
-    public List<Posts> getPosts() {
+    public List<Post> getPosts() {
         return posts;
     }
 
-    public List<Posts> getModeratedPosts() {
+    public List<Post> getModeratedPosts() {
         return moderatedPosts;
     }
 
-    public List<PostVotes> getVotes() {
+    public List<PostVote> getVotes() {
         return votes;
     }
 
-    public List<PostComments> getComments() {
+    public List<PostComment> getComments() {
         return comments;
     }
 
@@ -127,19 +145,27 @@ public class Users {
         this.photo = photo;
     }
 
-    public void setPosts(List<Posts> posts) {
+    public void setPosts(List<Post> posts) {
         this.posts = posts;
     }
 
-    public void setModeratedPosts(List<Posts> moderatedPosts) {
+    public void setModeratedPosts(List<Post> moderatedPosts) {
         this.moderatedPosts = moderatedPosts;
     }
 
-    public void setVotes(List<PostVotes> votes) {
+    public void setVotes(List<PostVote> votes) {
         this.votes = votes;
     }
 
-    public void setComments(List<PostComments> comments) {
+    public void setComments(List<PostComment> comments) {
         this.comments = comments;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

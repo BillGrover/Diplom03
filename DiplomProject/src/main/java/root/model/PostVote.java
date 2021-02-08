@@ -5,7 +5,8 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-public class PostVotes {    //Лайки и дизлайки
+@Table(name = "post_votes")
+public class PostVote {    //Лайки и дизлайки
 
     /****** ПОЛЯ ******/
     @Id
@@ -13,14 +14,14 @@ public class PostVotes {    //Лайки и дизлайки
     private int id;
 
     @NotNull
-    @ManyToOne(targetEntity = Users.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    private User user;
 
     @NotNull
-    @ManyToOne(targetEntity = Posts.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = Post.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id", nullable = false)
-    private Posts post;
+    private Post post;
 
     @NotNull
     private Date time;
@@ -33,11 +34,11 @@ public class PostVotes {    //Лайки и дизлайки
         return id;
     }
 
-    public Users getUser() {
+    public User getUser() {
         return user;
     }
 
-    public Posts getPost() {
+    public Post getPost() {
         return post;
     }
 
@@ -54,11 +55,11 @@ public class PostVotes {    //Лайки и дизлайки
         this.id = id;
     }
 
-    public void setUser(Users user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public void setPost(Posts post) {
+    public void setPost(Post post) {
         this.post = post;
     }
 

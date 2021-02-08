@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@Table(name = "tag2post")
 public class Tag2Post {
 
     /****** ПОЛЯ ******/
@@ -14,23 +15,23 @@ public class Tag2Post {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "post_id")
-    private Posts post;
+    private Post post;
 
     @NotNull
     @ManyToOne
     @JoinColumn(name = "tag_id")
-    private Tags tag;
+    private Tag tag;
 
     /****** ГЕТТЕРЫ ******/
     public int getId() {
         return id;
     }
 
-    public Posts getPost() {
+    public Post getPost() {
         return post;
     }
 
-    public Tags getTag() {
+    public Tag getTag() {
         return tag;
     }
 
@@ -39,11 +40,11 @@ public class Tag2Post {
         this.id = id;
     }
 
-    public void setPost(Posts post) {
+    public void setPost(Post post) {
         this.post = post;
     }
 
-    public void setTag(Tags tag) {
+    public void setTag(Tag tag) {
         this.tag = tag;
     }
 }

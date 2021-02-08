@@ -1,23 +1,29 @@
-create table captcha_codes(
-    id          integer     not null,
+create table captcha_codes
+(
+    id          integer     not null auto_increment,
     code        TINYTEXT    not null,
     secret_code TINYTEXT    not null,
     time        datetime(6) not null,
     primary key (id)
 ) engine = InnoDB;
 
-create table global_settings(
-    id    integer      not null,
+create table global_settings
+(
+    id    integer      not null auto_increment,
     code  varchar(255) not null,
     name  varchar(255) not null,
     value varchar(255) not null,
     primary key (id)
 ) engine = InnoDB;
 
-create table hibernate_sequence (next_val bigint) engine=InnoDB;
+create table hibernate_sequence
+(
+    next_val bigint
+) engine = InnoDB;
 
-create table post_comments(
-    id        integer     not null,
+create table post_comments
+(
+    id        integer     not null auto_increment,
     parent_id integer,
     text      TEXT        not null,
     time      datetime(6) not null,
@@ -26,8 +32,9 @@ create table post_comments(
     primary key (id)
 ) engine = InnoDB;
 
-create table posts(
-    id                integer      not null,
+create table posts
+(
+    id                integer      not null auto_increment,
     is_active         tinyint      not null,
     moderation_status varchar(255) not null,
     text              TEXT         not null,
@@ -39,8 +46,9 @@ create table posts(
     primary key (id)
 ) engine = InnoDB;
 
-create table post_votes(
-    id      integer     not null,
+create table post_votes
+(
+    id      integer     not null auto_increment,
     time    datetime(6) not null,
     value   tinyint     not null,
     post_id integer     not null,
@@ -48,21 +56,24 @@ create table post_votes(
     primary key (id)
 ) engine = InnoDB;
 
-create table tag2post(
-    id      integer not null,
+create table tag2post
+(
+    id      integer not null auto_increment,
     post_id integer not null,
     tag_id  integer not null,
     primary key (id)
 ) engine = InnoDB;
 
-create table tags(
-    id    integer      not null,
+create table tags
+(
+    id    integer      not null auto_increment,
     title varchar(255) not null,
     primary key (id)
 ) engine = InnoDB;
 
-create table users(
-    id           integer      not null,
+create table users
+(
+    id           integer      not null auto_increment,
     code         varchar(255),
     email        varchar(255) not null,
     is_moderator tinyint      not null,
@@ -72,6 +83,28 @@ create table users(
     reg_time     datetime(6)  not null,
     primary key (id)
 ) engine = InnoDB;
+
+create table roles
+(
+    id   integer     not null auto_increment,
+    name varchar(20) not null,
+    primary key (id)
+) engine = InnoDB;
+
+create table users_roles
+(
+    user_id integer not null,
+    role_id integer not null,
+    primary key (user_id, role_id)
+) engine = InnoDB;
+
+alter table users_roles
+    add constraint FKj6m8fwv7oqv74fcehir1a9ffy
+        foreign key (role_id) references roles (id);
+
+alter table users_roles
+    add constraint FK2o0jvgh89lemvvo17cbqvdxaa
+        foreign key (user_id) references users (id);
 
 alter table post_comments
     add constraint comment2post_fk

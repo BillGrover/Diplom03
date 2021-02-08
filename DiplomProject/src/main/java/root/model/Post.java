@@ -1,6 +1,7 @@
 package root.model;
 
-import org.apache.catalina.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import root.model.enums.ModerationStatus;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -9,7 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Posts {
+@Table(name = "posts")
+public class Post {
 
     /****** ПОЛЯ ******/
     @Id
@@ -24,14 +26,14 @@ public class Posts {
     @Enumerated(EnumType.STRING)
     private ModerationStatus moderationStatus;
 
-    @ManyToOne(targetEntity = Users.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "moderator_id", nullable = false)
-    private Users moderator;
+    private User moderator;
 
     @NotNull
-    @ManyToOne(targetEntity = Users.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    private User user;
 
     @NotNull
     private Date time;
@@ -46,14 +48,17 @@ public class Posts {
     @NotNull
     private int viewCount;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "post")
     Set<Tag2Post> tag2Post;
 
-    @OneToMany(targetEntity = PostVotes.class, mappedBy = "post")
-    private List<PostVotes> votes;
+    @JsonIgnore
+    @OneToMany(targetEntity = PostVote.class, mappedBy = "post")
+    private List<PostVote> votes;
 
-    @OneToMany(targetEntity = PostComments.class, mappedBy = "post")
-    private List<PostComments> comments;
+    @JsonIgnore
+    @OneToMany(targetEntity = PostComment.class, mappedBy = "post")
+    private List<PostComment> comments;
 
     /****** GETTERS ******/
     public int getId() {
@@ -68,11 +73,11 @@ public class Posts {
         return moderationStatus;
     }
 
-    public Users getModerator() {
+    public User getModerator() {
         return moderator;
     }
 
-    public Users getUser() {
+    public User getUser() {
         return user;
     }
 
@@ -96,11 +101,11 @@ public class Posts {
         return tag2Post;
     }
 
-    public List<PostVotes> getVotes() {
+    public List<PostVote> getVotes() {
         return votes;
     }
 
-    public List<PostComments> getComments() {
+    public List<PostComment> getComments() {
         return comments;
     }
 
@@ -117,11 +122,11 @@ public class Posts {
         this.moderationStatus = moderationStatus;
     }
 
-    public void setModerator(Users moderator) {
+    public void setModerator(User moderator) {
         this.moderator = moderator;
     }
 
-    public void setUser(Users user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
@@ -145,11 +150,11 @@ public class Posts {
         this.tag2Post = tag2Post;
     }
 
-    public void setVotes(List<PostVotes> votes) {
+    public void setVotes(List<PostVote> votes) {
         this.votes = votes;
     }
 
-    public void setComments(List<PostComments> comments) {
+    public void setComments(List<PostComment> comments) {
         this.comments = comments;
     }
 }

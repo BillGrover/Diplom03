@@ -1,64 +1,71 @@
 package root.controller;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.json.simple.JSONObject;
-import root.model.ModerationStatus;
-import root.model.Posts;
-import root.repos.PostRepository;
+import root.dtoResponses.PostResponse;
 import root.services.PostService;
-
-import java.util.Date;
 
 @Controller
 @RequestMapping("/api/post")
 public class ApiPostController {
 
-    private PostRepository postRepo;
+    private PostService postService;
 
-    public ApiPostController(PostRepository postRepo) {
-        this.postRepo = postRepo;
+    public ApiPostController(PostService postService) {
+        this.postService = postService;
     }
 
     @GetMapping
-    @ResponseBody
-    public JSONObject post(
-            @RequestParam(name = "offset", defaultValue = "0") int offset,
-            @RequestParam(defaultValue = "10") int limit,
+    public ResponseEntity<PostResponse> getAllPosts(
+            @RequestParam(defaultValue = "0") String offset,
+            @RequestParam(defaultValue = "10") String limit,
             @RequestParam String mode){
-
-        Pageable pagingation = PageRequest.of(offset, limit);
-        Page<Posts> filteredSortedPosts;
-
-        switch (mode){
-            case ("recent"):    //сначала новые
-                filteredSortedPosts = postRepo.findRecent(pagingation);
-                break;
-            case ("popular"):   //по убыванию комментариев (comments.size)
-                filteredSortedPosts = postRepo.findPopular(pagingation);
-                break;
-            case ("best"):      //по убыванию лайков (сумма значений листа votes)
-                filteredSortedPosts = postRepo.findBest(pagingation);
-                break;
-            case ("early"):     //сначала старые
-                filteredSortedPosts = postRepo.findEarly(pagingation);
-                break;
-            default:            //по id
-                filteredSortedPosts = postRepo.findAllByIsActiveAndModerationStatusAndTimeBeforeOrderById(
-                        (byte) 1, ModerationStatus.ACCEPTED, new Date(), pagingation);
-        }
-        return PostService.packToJson(filteredSortedPosts);
+        return postService.getPosts(offset, limit, mode);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<PostResponse> getPostsByQuery(
+            @RequestParam(defaultValue = "0") String offset,
+            @RequestParam(defaultValue = "10") String limit,
+            @RequestParam String query){
+        return postService.getByQuery(offset, limit, query);
+    }
+
+    @GetMapping("/byDate")
+    @ResponseBody
+    public ResponseEntity<PostResponse> getPostsByDate(
+            @RequestParam(defaultValue = "0") String offset,
+            @RequestParam(defaultValue = "10") String limit,
+            @RequestParam (defaultValue = "1970-01-01")String date) {
+        return postService.getByDate(offset, limit, date);
+    }
+
+    @GetMapping("/byTag")
+    @ResponseBody
+    public ResponseEntity<PostResponse> byTag(
+            @RequestParam(defaultValue = "0") String offset,
+            @RequestParam(defaultValue = "10") String limit,
+            @RequestParam String tag) {
+        return postService.getByTag(offset, limit, tag);
+    }
+
+    @GetMapping("/moderation")
+    @ResponseBody
+    public ResponseEntity<PostResponse> moderation(
+            @RequestParam(defaultValue = "0") String offset,
+            @RequestParam(defaultValue = "10") String limit,
+            @RequestParam String status) {
+        return postService.getModeration(offset, limit, status);
+    }
+
 
     @PostMapping("/like")
     public void setLike(){
 //        TODO: Ограничить приём лайков ТОЛЬКО как 1
     }
 
-    @PostMapping("/like")
+    @PostMapping("/dislike")
     public void setDislike(){
 //        TODO: Ограничить приём дизлайков ТОЛЬКО как -1
     }
