@@ -9,7 +9,7 @@ public class Tag2Post {
 
     /****** ПОЛЯ ******/
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
 
     @NotNull
@@ -21,6 +21,14 @@ public class Tag2Post {
     @ManyToOne
     @JoinColumn(name = "tag_id")
     private Tag tag;
+
+    public Tag2Post(@NotNull Post post, @NotNull Tag tag) {
+        this.post = post;
+        this.tag = tag;
+    }
+
+    public Tag2Post() {
+    }
 
     /****** ГЕТТЕРЫ ******/
     public int getId() {

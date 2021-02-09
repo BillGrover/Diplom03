@@ -1,20 +1,32 @@
 package root.repositories;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
-import root.model.enums.ModerationStatus;
+import root.enums.ModerationStatus;
 import root.model.Post;
 import java.util.Date;
 
 public interface PostRepository extends PagingAndSortingRepository<Post, Long> {
 
     /********************************************************************** ПОИСК ПОСТОВ *************************/
-    /********* ДЕФОЛТНЫЙ ПОИСК ПОСТОВ (по Id) *********/
+    /********* ДЕФОЛТНЫЙ ПОИСК ПОСТОВ *********/
     Page<Post> findAllByIsActiveAndModerationStatusAndTimeBeforeOrderById(
             byte isActive, ModerationStatus moderationStatus, Date time, Pageable p);
+
+    /**
+     * Метод находит пост активный, допущенный, неотложенный по id.
+     * @return Post
+     */
+    @Query(value = "SELECT p FROM Post p " +
+            "WHERE p.isActive = 1 " +
+            "AND p.moderationStatus = 'ACCEPTED' " +
+            "AND p.time < CURRENT_TIME " +
+            "AND p.id = :id")
+    Post findById(@Param("id")int id);
 
     /********* ПОИСК САМЫХ НОВЫХ ПОСТОВ *********/
     @Query("SELECT p FROM Post p WHERE p.isActive = 1 AND p.moderationStatus = 'ACCEPTED' AND p.time < CURRENT_TIME " +
@@ -64,15 +76,41 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Long> {
             "WHERE posts.is_active = 1 " +
             "AND posts.moderation_status = :status ",
             nativeQuery = true)
-    Page<Post> findbyStatus(@Param("status") String status, Pageable p);
+    Page<Post> findByStatusAndModeratorId(@Param("status") String status, Pageable p);
 
-    /********* ПОИСК ПОСТОВ ПО СТАТУСУ (ACCEPTED и DECLINED) *********/
+    /**
+     * Поиск постов, проверенных определённым модератором и статусу поста.
+     * @param status - отклонённые (DECLINED) или принятые (ACCEPTED) посты.
+     * @param moderId - id модератора.
+     * @param p - Параметры пагинации.
+     * @return Page.
+     */
     @Query(value = "SELECT * FROM posts " +
             "WHERE posts.is_active = 1 " +
             "AND posts.moderation_status = :status " +
             "AND posts.moderator_id = :moderId",
             nativeQuery = true)
-    Page<Post> findbyStatus(@Param("status") String status, @Param("moderId") int moderId, Pageable p);
+    Page<Post> findByStatusAndModeratorId(@Param("status") String status, @Param("moderId") int moderId, Pageable p);
+
+    /**
+     * Поиск неопубликованных постов текущего юзера.
+     * @param currentUserId - ID текущего авторизованного юзера.
+     * @param p - Параметры пагинации.
+     * @return Page.
+     */
+    @Query(value = "SELECT * FROM posts WHERE user_id = :currentUserId AND is_active = 0",
+            nativeQuery = true)
+    Page<Post> findInactive(@Param("currentUserId")int currentUserId, Pageable p);
+
+    /**
+     * Поиск постов текущего юзера, ожидающих модерации (NEW), отклонённых модератором (DECLINED), опубликованных (ACCEPTED).
+     * @param currentUserId - ID текущего авторизованного юзера.
+     * @param p - Параметры пагинации.
+     * @return Page.
+     */
+    @Query(value = "SELECT * FROM posts WHERE user_id = :currentUserId AND moderation_status = :status AND is_active = 1",
+            nativeQuery = true)
+    Page<Post> findByStatusAndUserId(@Param("currentUserId")int currentUserId, @Param("status")String status, Pageable p);
 
     /********************************************************************** ПОДСЧЁТ ПОСТОВ *************************/
     /********* ПОИСК КОЛИЧЕСТВА ПОСТОВ ПО ТЕГУ *********/
@@ -100,4 +138,7 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Long> {
             "AND posts.time < CURRENT_TIME ",
             nativeQuery = true)
     int countByModerationStatus(@Param("status")String status);
+
+
+
 }

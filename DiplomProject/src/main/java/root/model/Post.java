@@ -1,7 +1,7 @@
 package root.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import root.model.enums.ModerationStatus;
+import root.enums.ModerationStatus;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,7 +15,7 @@ public class Post {
 
     /****** ПОЛЯ ******/
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
 
     @NotNull

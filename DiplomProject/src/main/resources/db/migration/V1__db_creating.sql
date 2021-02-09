@@ -18,7 +18,7 @@ create table global_settings
 
 create table hibernate_sequence
 (
-    next_val bigint
+    next_val bigint not null
 ) engine = InnoDB;
 
 create table post_comments

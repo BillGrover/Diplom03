@@ -3,7 +3,10 @@ package root.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import root.dtoResponses.PostResponse;
+import root.dtoRequests.PostRequest;
+import root.dtoResponses.OnePostResponse;
+import root.dtoResponses.PostsResponse;
+import root.dtoResponses.SimpleResponse;
 import root.services.PostService;
 
 @Controller
@@ -17,7 +20,7 @@ public class ApiPostController {
     }
 
     @GetMapping
-    public ResponseEntity<PostResponse> getAllPosts(
+    public ResponseEntity<PostsResponse> getAllPosts(
             @RequestParam(defaultValue = "0") String offset,
             @RequestParam(defaultValue = "10") String limit,
             @RequestParam String mode){
@@ -25,7 +28,7 @@ public class ApiPostController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PostResponse> getPostsByQuery(
+    public ResponseEntity<PostsResponse> getPostsByQuery(
             @RequestParam(defaultValue = "0") String offset,
             @RequestParam(defaultValue = "10") String limit,
             @RequestParam String query){
@@ -34,7 +37,7 @@ public class ApiPostController {
 
     @GetMapping("/byDate")
     @ResponseBody
-    public ResponseEntity<PostResponse> getPostsByDate(
+    public ResponseEntity<PostsResponse> getPostsByDate(
             @RequestParam(defaultValue = "0") String offset,
             @RequestParam(defaultValue = "10") String limit,
             @RequestParam (defaultValue = "1970-01-01")String date) {
@@ -43,7 +46,7 @@ public class ApiPostController {
 
     @GetMapping("/byTag")
     @ResponseBody
-    public ResponseEntity<PostResponse> byTag(
+    public ResponseEntity<PostsResponse> byTag(
             @RequestParam(defaultValue = "0") String offset,
             @RequestParam(defaultValue = "10") String limit,
             @RequestParam String tag) {
@@ -52,13 +55,35 @@ public class ApiPostController {
 
     @GetMapping("/moderation")
     @ResponseBody
-    public ResponseEntity<PostResponse> moderation(
+    public ResponseEntity<PostsResponse> moderation(
             @RequestParam(defaultValue = "0") String offset,
             @RequestParam(defaultValue = "10") String limit,
             @RequestParam String status) {
         return postService.getModeration(offset, limit, status);
     }
 
+    @GetMapping("/my")
+    @ResponseBody
+    public ResponseEntity<PostsResponse> my(
+            @RequestParam(defaultValue = "0") String offset,
+            @RequestParam(defaultValue = "10") String limit,
+            @RequestParam String status) {
+        return postService.getMy(offset, limit, status);
+    }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity<OnePostResponse> postId(
+            @PathVariable int id) {
+        return postService.getOnePost(id);
+    }
+
+    @PostMapping
+    @ResponseBody
+    public ResponseEntity<SimpleResponse> postPost(
+            @RequestBody PostRequest postRequest) {
+        return postService.savePost(postRequest);
+    }
 
     @PostMapping("/like")
     public void setLike(){

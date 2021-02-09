@@ -10,7 +10,7 @@ public class PostVote {    //Лайки и дизлайки
 
     /****** ПОЛЯ ******/
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
 
     @NotNull

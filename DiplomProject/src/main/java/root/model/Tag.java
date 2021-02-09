@@ -12,7 +12,7 @@ public class Tag {
 
     /****** ПОЛЯ ******/
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
 
     @NotNull
@@ -21,6 +21,13 @@ public class Tag {
     @JsonIgnore
     @OneToMany(mappedBy = "tag")
     Set<Tag2Post> tag2Post;
+
+    public Tag(@NotNull String title) {
+        this.title = title;
+    }
+
+    public Tag() {
+    }
 
     /****** ГЕТТЕРЫ ******/
     public int getId() {

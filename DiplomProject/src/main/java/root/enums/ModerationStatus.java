@@ -1,4 +1,4 @@
-package root.model.enums;
+package root.enums;
 
 public enum ModerationStatus {
     NEW, ACCEPTED, DECLINED;

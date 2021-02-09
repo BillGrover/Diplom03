@@ -10,7 +10,7 @@ public class PostComment {
 
     /****** ПОЛЯ ******/
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "parent_id", nullable = true)
