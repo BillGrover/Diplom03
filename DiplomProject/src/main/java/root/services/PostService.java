@@ -24,6 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -263,45 +264,97 @@ public class PostService {
      */
     public ResponseEntity<SimpleResponse> savePost(PostRequest postRequest) {
 
-        ErrorsDto errorsDto = new ErrorsDto();
-        if (postRequest.getText().length() < 50)
-            errorsDto.setText("Текст поста не может быть короче 50 символов.");
-        if (postRequest.getTitle().length() < 3)
-            errorsDto.setTitle("Заголовок поста не может быть короче 3 символов");
-        if (postRequest.getText().length() < 50 || postRequest.getTitle().length() < 3) {
-            return new ResponseEntity<>(new SimpleResponse(false, errorsDto), HttpStatus.OK);
-        }
+        if (postRequest.getText().length() < 50 || postRequest.getTitle().length() < 3)
+            return tooShortTextOrTitle(postRequest);
 
         try {
             Post newPost = new Post();
             newPost.setIsActive(postRequest.getActive());
             newPost.setModerationStatus(dependsOfGlobalSettings());
             newPost.setUser(getUserFromContext());
-            newPost.setTime(postRequest.getTimestamp() * 1000 < System.currentTimeMillis() ? new Date() : new Date(postRequest.getTimestamp() * 1000));
+            newPost.setTime(
+                    postRequest.getTimestamp() * 1000 < System.currentTimeMillis() ? new Date() : new Date(postRequest.getTimestamp() * 1000));
             newPost.setTitle(postRequest.getTitle());
             newPost.setText(postRequest.getText());
             newPost.setViewCount(0);
             postRepo.save(newPost);
-
-            addTagsIfNotExist(postRequest.getTags());
-            List<Tag> tags = postRequest.getTags().stream().map(t -> tagRepo.findByTitle(t)).collect(Collectors.toList());
-            newPost.setTag2Post(
-                    tags.stream().map(
-                            tag -> {
-                                Tag2Post t2p = new Tag2Post(newPost, tag);
-                                tag2PostRepo.save(t2p);
-                                return t2p;
-                            }).collect(Collectors.toSet()));
+            newPost.setTag2Post(handleTags(postRequest, newPost));
         } catch (Exception e) {
-            System.out.println("Ошибка при записи поста в базу данных\n" + e.getMessage());
-            return new ResponseEntity<>(new SimpleResponse(false, errorsDto), HttpStatus.OK);
+            System.out.println("Ошибка при записи нового поста в базу данных\n" + e.getMessage());
+            return new ResponseEntity<>(new SimpleResponse(false, new ErrorsDto()), HttpStatus.OK);
         }
         return new ResponseEntity<>(new SimpleResponse(true, new ErrorsDto()), HttpStatus.OK);
     }
 
     /**
+     * Метод апдейтит пост или возвращает ошибки, если апдейт не удался.
+     *
+     * @param id          - id поста
+     * @param postRequest - новые данные поста.
+     * @return SimpleResponse.
+     */
+    public ResponseEntity<SimpleResponse> updatePost(int id, PostRequest postRequest) {
+        if (postRequest.getText().length() < 50 || postRequest.getTitle().length() < 3)
+            return tooShortTextOrTitle(postRequest);
+        try {
+            Post post = postRepo.findById(id);
+            post.setIsActive(postRequest.getActive());
+            if (getUserFromContext().getIsModerator() == 0)
+                post.setModerationStatus(dependsOfGlobalSettings());
+            post.setTime(postRequest.getTimestamp() * 1000 < System.currentTimeMillis() ? new Date() : new Date(postRequest.getTimestamp() * 1000));
+            post.setTitle(postRequest.getTitle());
+            post.setText(postRequest.getText());
+            post.setTag2Post(handleTags(postRequest, post));
+        } catch (Exception e) {
+            System.out.println("Ошибка при редактировании поста в базе данных\n" + e.getMessage());
+            return new ResponseEntity<>(new SimpleResponse(false, new ErrorsDto()), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new SimpleResponse(true, new ErrorsDto()), HttpStatus.OK);
+    }
+
+    /**
+     * Метод обрабатывает теги из запроса, записывает их в базу и создаёт связи с постом.
+     *
+     * @param postRequest - пост из запроса.
+     * @return - Set(Tag2Post) готовый к записи в пост.
+     */
+    private Set<Tag2Post> handleTags(PostRequest postRequest, Post newPost) {
+        addTagsIfNotExist(postRequest.getTags());
+        List<Tag> tags =
+                postRequest.getTags()
+                        .stream()
+                        .map(t -> tagRepo.findByTitle(t))
+                        .collect(Collectors.toList());
+
+        Set<Tag2Post> tag2Posts =
+                tags.stream()
+                        .map(tag -> {
+                            Tag2Post t2p = new Tag2Post(newPost, tag);
+                            tag2PostRepo.save(t2p);
+                            return t2p;
+                        }).collect(Collectors.toSet());
+        return tag2Posts;
+    }
+
+    /**
+     * Метод создаёт требуемый респонс, если текст или заголовок поста слишком короткие.
+     *
+     * @param postRequest - проверяемый пост.
+     * @return ResponseEntity.
+     */
+    private ResponseEntity<SimpleResponse> tooShortTextOrTitle(PostRequest postRequest) {
+        ErrorsDto errorsDto = new ErrorsDto();
+        if (postRequest.getText().length() < 50)
+            errorsDto.setText("Текст поста не может быть короче 50 символов.");
+        if (postRequest.getTitle().length() < 3)
+            errorsDto.setTitle("Заголовок поста не может быть короче 3 символов");
+        return new ResponseEntity<>(new SimpleResponse(false, errorsDto), HttpStatus.OK);
+    }
+
+    /**
      * Метод проверяет глобальные настройки.
      * Если премодерация активна, устанавливает статус новых постов - NEW, в противном случае - ACCEPTED.
+     *
      * @return ModerationStatus.NEW or ModerationStatus.ACCEPTED.
      */
     private ModerationStatus dependsOfGlobalSettings() {

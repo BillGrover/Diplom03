@@ -23,7 +23,7 @@ public class ApiPostController {
     public ResponseEntity<PostsResponse> getAllPosts(
             @RequestParam(defaultValue = "0") String offset,
             @RequestParam(defaultValue = "10") String limit,
-            @RequestParam String mode){
+            @RequestParam String mode) {
         return postService.getPosts(offset, limit, mode);
     }
 
@@ -31,7 +31,7 @@ public class ApiPostController {
     public ResponseEntity<PostsResponse> getPostsByQuery(
             @RequestParam(defaultValue = "0") String offset,
             @RequestParam(defaultValue = "10") String limit,
-            @RequestParam String query){
+            @RequestParam String query) {
         return postService.getByQuery(offset, limit, query);
     }
 
@@ -40,7 +40,7 @@ public class ApiPostController {
     public ResponseEntity<PostsResponse> getPostsByDate(
             @RequestParam(defaultValue = "0") String offset,
             @RequestParam(defaultValue = "10") String limit,
-            @RequestParam (defaultValue = "1970-01-01")String date) {
+            @RequestParam(defaultValue = "1970-01-01") String date) {
         return postService.getByDate(offset, limit, date);
     }
 
@@ -85,13 +85,21 @@ public class ApiPostController {
         return postService.savePost(postRequest);
     }
 
+    @PutMapping("/{id}")
+    @ResponseBody
+    public ResponseEntity<SimpleResponse> updatePost(
+            @PathVariable int id,
+            @RequestBody PostRequest postRequest) {
+        return postService.updatePost(id, postRequest);
+    }
+
     @PostMapping("/like")
-    public void setLike(){
+    public void setLike() {
 //        TODO: Ограничить приём лайков ТОЛЬКО как 1
     }
 
     @PostMapping("/dislike")
-    public void setDislike(){
+    public void setDislike() {
 //        TODO: Ограничить приём дизлайков ТОЛЬКО как -1
     }
 }

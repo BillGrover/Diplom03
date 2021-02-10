@@ -4,3 +4,10 @@ spring.datasource.username: root
 spring.datasource.password: 27526976
 hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
 spring.jpa.show-sql: false
+
+spring.servlet.multipart.max-file-size: 10240KB
+spring.servlet.multipart.max-request-size: 10240KB
+
+upload.path: F://UDOLI
+#upload.path: upload
+maxFileSize: 1048576
