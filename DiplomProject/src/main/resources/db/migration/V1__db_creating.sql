@@ -93,9 +93,10 @@ create table roles
 
 create table users_roles
 (
+    id      integer not null auto_increment,
     user_id integer not null,
     role_id integer not null,
-    primary key (user_id, role_id)
+    primary key (id)
 ) engine = InnoDB;
 
 alter table users_roles

@@ -24,6 +24,9 @@ public class CaptchaCode {
     @Column(columnDefinition = "TINYTEXT")
     private String secretCode;
 
+    public CaptchaCode() {
+    }
+
     /****** ГЕТТЕРЫ ******/
     public int getId() {
         return id;

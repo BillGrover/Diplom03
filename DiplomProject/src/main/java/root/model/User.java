@@ -1,13 +1,11 @@
 package root.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang.RandomStringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -55,13 +53,24 @@ public class User {
     private List<PostComment> comments;
 
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles = new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    Set<Role2User> role2Users;
+
+
+    public User() {
+    }
+
+    public User(
+            @NotNull String name,
+            @NotNull String email,
+            @NotNull String password) {
+        this.isModerator = 0;
+        this.regTime = new Date();
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.code = RandomStringUtils.random(5, true, true);
+    }
 
     /****** ГЕТТЕРЫ ******/
     public int getId() {
@@ -161,11 +170,11 @@ public class User {
         this.comments = comments;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public Set<Role2User> getRole2Users() {
+        return role2Users;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole2Users(Set<Role2User> role2Users) {
+        this.role2Users = role2Users;
     }
 }
