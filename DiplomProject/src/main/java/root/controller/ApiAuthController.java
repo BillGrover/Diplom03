@@ -51,5 +51,11 @@ public class ApiAuthController {
     public SimpleResponse register(@RequestBody UserRequest registerRequest) {
         return authService.register(registerRequest);
     }
+
+    @PostMapping("/restore")
+    @ResponseBody
+    public SimpleResponse restore(@RequestBody UserRequest restoreRequest) {
+        return authService.restore(restoreRequest);
+    }
 }
 

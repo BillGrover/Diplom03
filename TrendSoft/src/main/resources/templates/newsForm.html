@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <title>News editor</title>
+    <meta charset="UTF-8">
+</head>
+
+<body>
+<div class="main">
+    <h4 class="centerText">Редактор новостей</h4>
+    <br/>
+    <div th:if="${error}" class="error">error</div>
+
+    <form method="POST" th:action="@{/news/new}" id="newForm">
+
+        <input type="hidden" id="newsId" th:field="*{newsForm.id}" th:value="*{newsForm.id}"/>
+
+        <label for="newsTitle">News title: </label><br/>
+        <input type="text" id="newsTitle" th:field="*{newsForm.title}"/>
+        <br/>
+        <span th:if="${#fields.hasErrors('newsForm.title')}"
+              th:errors="*{newsForm.title}" class="error">title error</span>
+        <br/><br/>
+
+        <label for="category">Category: </label><br/>
+        <input type="text" id="category" th:field="*{categoryForm.name}"/>
+        <br/>
+        <span th:if="${#fields.hasErrors('categoryForm.name')}"
+              th:errors="*{categoryForm.name}" class="error">categoryName error</span>
+        <br/><br/>
+
+
+        <label for="newsText">News text: </label><br/>
+        <textarea rows="4" cols="30" th:field="*{newsForm.text}" id="newsText"
+                  style="margin: 0px; width: 450px; height: 304px;"></textarea>
+        <br/>
+        <span th:if="${#fields.hasErrors('newsForm.text')}"
+              th:errors="*{newsForm.text}" class="error">newsText error</span>
+        <br/><br/>
+
+        <input type="submit" value="Oтправить"/>
+
+    </form>
+</div>
+</body>
+</html>

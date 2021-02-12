@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <title>TrendSoft News</title>
+</head>
+
+<body>
+<div class="main">
+    <h1 class="centerText">HOT NEWS!</h1>
+
+    <p class="centerText">Поиск новостей по категориям: </p>
+        <form method="post" th:object="${categoryForm}" th:action="@{/news/byCategory}">
+        <select th:field="*{id}">
+            <option th:each="category : ${categoryList}"
+                    th:value="${category.id}"
+                    th:utext="${category.name}"></option>
+        </select>
+        <input type="submit" value="Показать"/>
+    </form>
+    <br/>
+
+    <p class="centerText">Поиск новостей по заголовку: </p>
+        <form method="post" th:object="${newsForm}" th:action="@{/news/byTitle}">
+        <input type="text" th:field="*{title}"/>
+        <input type="submit" value="Искать"/>
+    </form>
+    <br/>
+
+    <p class="centerText">Поиск новостей по тексту: </p>
+    <form method="post" th:object="${newsForm}" th:action="@{/news/byText}">
+        <input type="text" th:field="*{text}"/>
+        <input type="submit" value="Искать"/>
+    </form>
+
+    <br/><br/>
+    <form method="GET" th:action="@{/news/new}">
+        <input type="submit" value="Создать новость"/>
+    </form>
+    <br/>
+
+    <h3 class="centerText">News:</h3>
+    <div class="bodered">
+        <ul class="left">
+            <div th:each="item : ${newsListAttr}">
+                <li>
+                    <a th:href="@{/news/{path}(path=${item.id})}">
+                        <p th:text="${item.title} + ' (' + ${item.getPrettyDate()} + ')'"></p>
+                    </a>
+                </li>
+            </div>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
