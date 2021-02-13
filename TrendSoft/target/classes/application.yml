@@ -1,0 +1,5 @@
+spring.jpa.hibernate.ddl-auto: validate
+spring.datasource.url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/trend_soft?serverTimezone=UTC
+spring.datasource.username: root
+spring.datasource.password: 27526976
+spring.jpa.show-sql: false

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <meta charset="UTF-8">
+    <title>Read and enjoy!</title>
+</head>
+<body>
+<div class="main">
+    <h2 class="centerText">
+        <p th:text="${oneNews.title}"></p>
+    </h2>
+    <br/>
+    <p class="bodered" th:text="${oneNews.text}"></p>
+
+    <br/>
+    <form method="GET" th:action="@{/home}">
+        <input type="submit" value="Back to news"/>
+    </form>
+    <br/>
+
+    <form method="GET" th:action="@{/news/edit/{path}(path=${oneNews.id})}">
+        <input type="submit" value="Редактировать новость"/>
+    </form>
+    <br/>
+
+    <form method="GET" th:action="@{/news/delete/{path}(path=${oneNews.id})}">
+        <input type="submit" value="Удалить новость"/>
+    </form>
+</div>
+</body>
+</html>

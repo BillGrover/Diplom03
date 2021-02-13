@@ -1,0 +1,32 @@
+.main{
+    width: 500px;
+    margin: 0 auto;
+}
+
+.centerText{
+    text-align: center;
+}
+
+.center{
+    margin: 0 auto;
+}
+
+.left{
+    text-align: left;
+}
+
+.error{
+    color: red;
+}
+
+.bodered{
+    text-align: center;
+    border: burlywood;
+    border-style: dotted;
+}
+
+body {
+    background-color: aliceblue;
+}
+
+form {text-align:center;}
